@@ -76,16 +76,6 @@ script.js    everything else, in seven commented sections
 README.md    this file
 ```
 
-`script.js` is ordered so it can be read top to bottom: tuning numbers, Environment, Fuel, Spark, Simulation, View, Game. The ten rules are all inside `Simulation.step()`, each marked with a `RULE n` comment. Every number worth changing is in the first section.
-
-No libraries, no build step, no external assets.
-
 ## Running it
 
 Open `index.html` in a browser.
-
-To publish with GitHub Pages: put the four files in the root of a repository, then choose Settings → Pages → Deploy from a branch → `main` / root.
-
-## How it was tuned
-
-The simulation part of `script.js` runs without a browser, so scripted players were run through hundreds of full nights to set the numbers. Doing nothing loses in about half a minute. Dropping all the fuel on at once smothers the fire within seconds. Building a big fire runs out of wood before dawn or spreads. A scripted player that keeps two or three logs sensibly spaced reaches sunrise in a little over half its nights. These are scripted players, not people, so the difficulty may want adjusting after real play: `START_INVENTORY`, the logs' `burnTime` and the sparks' heat are the first numbers to try.
