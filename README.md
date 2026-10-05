@@ -6,7 +6,7 @@ An interactive campfire that behaves as an emergent system. You are camping in a
 
 An interactive campfire simulation where the player manipulates fuel, and environmental conditions indirectly shape the outcome.
 
-There is no "fire health" number anywhere in the code. The fire exists only because individual pieces of fuel are burning and heating each other. The player can do exactly one thing: choose a piece of fuel and where to put it. Wind and moisture drift on their own through the night.
+The player needs to choose a piece of fuel and where to put it. Wind and moisture drift on their own through the night.
 
 ## How to play
 
