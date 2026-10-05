@@ -1,0 +1,274 @@
+/* Keep the Fire Alive
+   The canvas fills the window. Everything else is a thin layer of text on top. */
+
+:root {
+  --night: #05070f;
+  --paper: #e8dcc6;          /* warm off-white, like firelit paper */
+  --paper-dim: rgba(232, 220, 198, 0.56);
+  --ember: #ff9a52;
+  --danger: #ff6a4a;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: "Avenir Next", Avenir, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--night);
+  color: var(--paper);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#scene {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+body.dragging, body.dragging * { cursor: grabbing !important; }
+
+/* ---------- title and clock ---------- */
+
+.top {
+  position: fixed;
+  top: clamp(14px, 3.4vh, 34px);
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.7);
+}
+
+.top h1 {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: clamp(10px, 1.5vh, 13px);
+  font-weight: 500;
+  letter-spacing: 0.46em;
+  text-indent: 0.46em;          /* keeps tracked-out text optically centred */
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+
+.clock {
+  margin-top: 0.18em;
+  font-family: var(--serif);
+  font-size: clamp(30px, 6.2vh, 54px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.hint {
+  margin: 0.5em 0 0;
+  min-height: 1.4em;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(14px, 2.2vh, 18px);
+  color: var(--paper-dim);
+  opacity: 0;
+  transition: opacity 0.9s ease, color 0.6s ease;
+}
+.hint.show { opacity: 1; }
+.hint.danger { color: var(--danger); }
+
+/* ---------- wind and moisture ---------- */
+
+.weather {
+  position: fixed;
+  top: clamp(14px, 3.4vh, 34px);
+  left: clamp(16px, 2.6vw, 40px);
+  display: grid;
+  gap: 12px;
+  pointer-events: none;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.8);
+}
+
+.reading { display: grid; gap: 2px; }
+
+.label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+
+.value {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 22px;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The arrow is a line with a head. script.js flips it, and makes it longer in stronger wind. */
+.arrow {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 1.5px;
+  background: currentColor;
+  transition: width 0.6s ease;
+}
+.arrow::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* ---------- restart ---------- */
+
+.restart {
+  position: fixed;
+  top: clamp(14px, 3.4vh, 34px);
+  right: clamp(16px, 2.6vw, 40px);
+  padding: 6px 2px;
+  border: 0;
+  background: none;
+  color: var(--paper-dim);
+  font: 500 10px/1 var(--sans);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.restart:hover { color: var(--paper); border-bottom-color: var(--paper-dim); }
+
+button:focus-visible { outline: 1.5px solid var(--ember); outline-offset: 5px; }
+
+/* ---------- fuel ---------- */
+
+.inventory {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: clamp(10px, 2.6vh, 26px);
+  display: flex;
+  justify-content: center;
+  gap: clamp(18px, 4vw, 54px);
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.fuel {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  min-width: 92px;
+  padding: 6px 10px 4px;
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.85);
+  transition: opacity 0.4s ease;
+}
+
+.fuel canvas {
+  width: 64px;
+  height: 44px;
+  filter: drop-shadow(0 5px 6px rgba(0, 0, 0, 0.6));
+  transition: transform 0.18s ease;
+}
+.fuel:hover canvas { transform: translateY(-4px); }
+
+.fuel .name {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-indent: 0.26em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+
+.fuel .count {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.fuel.empty { opacity: 0.28; cursor: default; }
+.fuel.empty:hover canvas { transform: none; }
+
+/* ---------- the end of the night ---------- */
+
+.ending {
+  position: fixed;
+  left: 50%;
+  top: 30%;
+  width: min(34rem, 88vw);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.6);
+  animation: arrive 1.6s ease both;
+}
+.ending[hidden] { display: none; }
+
+.ending h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(30px, 6vh, 50px);
+  line-height: 1.12;
+  letter-spacing: 0.01em;
+}
+.ending[data-state="won"] h2 { color: #ffe2b8; }
+.ending[data-state="wildfire"] h2 { color: #ffb08c; }
+
+.ending p {
+  margin: 0.8em auto 1.5em;
+  max-width: 30rem;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(15px, 2.3vh, 18px);
+  line-height: 1.55;
+  color: rgba(232, 220, 198, 0.82);
+}
+
+.ending button {
+  padding: 11px 22px;
+  border: 1px solid rgba(232, 220, 198, 0.5);
+  background: rgba(8, 10, 18, 0.45);
+  color: var(--paper);
+  font: 500 11px/1 var(--sans);
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.ending button:hover { background: rgba(232, 220, 198, 0.14); border-color: var(--paper); }
+
+/* When the night is over the clock and fuel step back so the ending can be read. */
+body.ended .top { opacity: 0.35; transition: opacity 1.2s ease; }
+body.ended .inventory { opacity: 0.2; pointer-events: none; }
+body.ended .fuel { pointer-events: none; }
+
+@keyframes arrive {
+  from { opacity: 0; transform: translate(-50%, -46%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ending { animation: none; }
+  .hint, .arrow, .fuel canvas { transition: none; }
+}

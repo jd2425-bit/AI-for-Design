@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Keep the Fire Alive</title>
+  <meta name="description" content="An emergent campfire: place fuel, and the fire does the rest.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- The whole scene (sky, forest, fire) is drawn on this canvas by script.js -->
+  <canvas id="scene" aria-label="A campfire in a forest clearing at night"></canvas>
+
+  <header class="top">
+    <h1>Keep the fire alive</h1>
+    <div id="clock" class="clock">11:00 PM</div>
+    <p id="hint" class="hint" aria-live="polite"></p>
+  </header>
+
+  <aside class="weather" aria-label="Conditions">
+    <div class="reading">
+      <span class="label">Wind</span>
+      <span class="value"><span id="wind-arrow" class="arrow" aria-hidden="true"></span><span id="wind-value">0.00</span></span>
+    </div>
+    <div class="reading">
+      <span class="label">Moisture</span>
+      <span class="value" id="moisture-value">0%</span>
+    </div>
+  </aside>
+
+  <button id="restart" class="restart" type="button">Restart</button>
+
+  <!-- Drag one of these onto the ground to place a piece of fuel -->
+  <footer class="inventory" aria-label="Fuel">
+    <div class="fuel" data-type="leaf">
+      <canvas width="64" height="44" aria-hidden="true"></canvas>
+      <span class="name">Dry leaves</span>
+      <span class="count">× 10</span>
+    </div>
+    <div class="fuel" data-type="twig">
+      <canvas width="64" height="44" aria-hidden="true"></canvas>
+      <span class="name">Twigs</span>
+      <span class="count">× 12</span>
+    </div>
+    <div class="fuel" data-type="log">
+      <canvas width="64" height="44" aria-hidden="true"></canvas>
+      <span class="name">Logs</span>
+      <span class="count">× 7</span>
+    </div>
+  </footer>
+
+  <section id="ending" class="ending" hidden>
+    <h2 id="ending-title"></h2>
+    <p id="ending-text"></p>
+    <button id="again" type="button">Start another night</button>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
