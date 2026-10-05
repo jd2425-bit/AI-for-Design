@@ -1,8 +1,6 @@
 # TEND
 
-An interactive campfire that behaves as an emergent system. You are camping in a forest and have to keep the fire going from 11:00 PM until sunrise at 6:00 AM (about 150 seconds).
-
-**The player controls conditions, not outcomes.**
+An interactive campfire that behaves as an emergent system. You are camping in a forest and have to keep the fire going from 11:00 PM until sunrise at 6:00 AM.
 
 ## Concept
 
